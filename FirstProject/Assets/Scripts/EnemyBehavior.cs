@@ -7,6 +7,9 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField]
     private float _moveSpeed = 5f;
 
+    [SerializeField]
+    private int _attackDamage = 1;
+
     // Update is called once per frame
     void Update()
     {
@@ -15,8 +18,15 @@ public class EnemyBehavior : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.tag == "Player") {
-            //damage player
+
+            Player player = other.transform.GetComponent<Player>();
+
+            if (player != null) {
+                player.Damage(_attackDamage);
+            }
+
             Destroy(this.gameObject);
+            
         } else if (other.tag == "Laser") {
             Destroy(other.gameObject);
             Destroy(this.gameObject);
