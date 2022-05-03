@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class SpawnManager : MonoBehaviour
 {
-
+    #region "Enemy Field Region"
     [SerializeField]
     private GameObject _enemyPrefab;
 
@@ -13,20 +13,35 @@ public class SpawnManager : MonoBehaviour
 
     [SerializeField]
     private float _spawnTime = 5.0f;
-
     private bool _stopSpawning = false;
+
+    #endregion
+
+    #region "Powerup Field Region"
+    [SerializeField]
+    private GameObject[] _powerupPrefabs;
+
+    [SerializeField]
+    private float _spawnPowerTime = 5f;
+    private bool _stopSpawningPowerups = false;
+
+    #endregion
+
     // Start is called before the first frame update
     void Start() {
+        StartCoroutine(SpawnTriplePowerup());
         StartCoroutine(SpawnEnemy());
     }
 
-    // Update is called once per frame
-    void Update() {
-        
-    }
-
-    public void OnPlayerDeath() {
-        _stopSpawning = true;
+    IEnumerator SpawnTriplePowerup()
+    {
+        while (_stopSpawningPowerups == false ) {
+        Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7.5f, 0);
+        int randomPowerup = Random.Range(0,3);
+        GameObject triplePowerup = Instantiate(_powerupPrefabs[randomPowerup], posToSpawn, Quaternion.identity);
+        _spawnPowerTime = Random.Range(3, 8);
+        yield return new WaitForSeconds(_spawnPowerTime);
+        }
     }
 
     IEnumerator SpawnEnemy() {
@@ -37,6 +52,10 @@ public class SpawnManager : MonoBehaviour
             newEnemy.transform.parent = _enemyContainer.transform;
             yield return new WaitForSeconds(_spawnTime);
         }
+    }
+
+    public void OnPlayerDeath() {
+        _stopSpawning = true;
     }
 
 }

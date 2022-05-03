@@ -20,6 +20,9 @@ public class LaserShoot : MonoBehaviour
 
     private void DestroyLaser() {
         if ( transform.position.y > 8f ) {
+            if ( this.transform.parent != null ) {
+                Destroy(this.transform.parent.gameObject);
+            } 
             Destroy(this.gameObject);
         }
     }
