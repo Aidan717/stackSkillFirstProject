@@ -8,11 +8,13 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject _tripleShot;
     [SerializeField] private GameObject _shield;
                      private SpawnManager _spawnManager;
+                     private UIManager _uiManager;
     [SerializeField] private float _moveSpeed = 5f;
                      private float _speedMultiplier = 2f;
     [SerializeField] private float _fireRate = 0.5f;
                      private float _nextFire = -1f;
     [SerializeField] private int _lives = 3;
+    [SerializeField] private int _score = 0;
     [SerializeField] private bool isTriple = false;
     [SerializeField] private bool isShield = false;
 
@@ -23,8 +25,13 @@ public class Player : MonoBehaviour
 
         transform.position = new Vector3(0,0,0);
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
+        _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
          if (_spawnManager == null) {
             Debug.LogError("SpawnManager is NULL.");
+        }
+
+        if (_uiManager == null) {
+            Debug.LogError("The UIManager is null");
         }
     }
 
@@ -70,6 +77,7 @@ public class Player : MonoBehaviour
     public void Damage(int arg_damage) {
         if ( !isShield ) {
             _lives = _lives - arg_damage;
+            _uiManager.UpdateLives(_lives);
         } else {
             DeactivateShield();
         }
@@ -78,6 +86,11 @@ public class Player : MonoBehaviour
             _spawnManager.OnPlayerDeath();
             Destroy(this.gameObject);
         }
+    }
+
+    public void AddScore(int arg_scoreValue) {
+        _score += arg_scoreValue;
+        _uiManager.UpdateScore(_score);
     }
 
     #region "TripleBoostActivateAndDeactivate"
@@ -116,4 +129,6 @@ public class Player : MonoBehaviour
         _shield.SetActive(false);
     }
     #endregion
+
+
 }

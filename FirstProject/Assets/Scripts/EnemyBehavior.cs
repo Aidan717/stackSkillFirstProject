@@ -10,6 +10,15 @@ public class EnemyBehavior : MonoBehaviour
     [SerializeField]
     private int _attackDamage = 1;
 
+    private Player _player;
+
+    [SerializeField]
+    private int _scoreValue = 10;
+
+    private void Start() {
+        _player = GameObject.Find("Player").GetComponent<Player>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -29,6 +38,11 @@ public class EnemyBehavior : MonoBehaviour
             
         } else if (other.tag == "Laser") {
             Destroy(other.gameObject);
+
+            if (_player != null) {
+                _player.AddScore(_scoreValue);
+            }
+
             Destroy(this.gameObject);
         }
     }
