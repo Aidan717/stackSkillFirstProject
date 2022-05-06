@@ -27,14 +27,14 @@ public class SpawnManager : MonoBehaviour
 
     #endregion
 
-    // Start is called before the first frame update
-    void Start() {
+
+    public void StartSpawning() {
         StartCoroutine(SpawnTriplePowerup());
         StartCoroutine(SpawnEnemy());
     }
 
-    IEnumerator SpawnTriplePowerup()
-    {
+    IEnumerator SpawnTriplePowerup() {
+        yield return new WaitForSeconds(3.0f);
         while (_stopSpawningPowerups == false ) {
         Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7.5f, 0);
         int randomPowerup = Random.Range(0,3);
@@ -45,7 +45,7 @@ public class SpawnManager : MonoBehaviour
     }
 
     IEnumerator SpawnEnemy() {
-        
+        yield return new WaitForSeconds(3.0f);
         while ( _stopSpawning == false ) {
             Vector3 posToSpawn = new Vector3(Random.Range(-8f, 8f), 7.5f, 0);
             GameObject newEnemy = Instantiate(_enemyPrefab, posToSpawn, Quaternion.identity);
