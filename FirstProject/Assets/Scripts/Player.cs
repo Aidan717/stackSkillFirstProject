@@ -19,6 +19,12 @@ public class Player : MonoBehaviour
     [SerializeField] private bool isShield = false;
     [SerializeField] private GameObject _leftEngine, _rightEngine;
 
+    [SerializeField] private AudioClip _laserAudio;
+    [SerializeField] private AudioClip _powerUp;
+                     private AudioSource _audioSource;
+    
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -27,13 +33,17 @@ public class Player : MonoBehaviour
         transform.position = new Vector3(0,0,0);
         _spawnManager = GameObject.Find("SpawnManager").GetComponent<SpawnManager>();
         _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
+        _audioSource = GetComponent<AudioSource>();
          if (_spawnManager == null) {
             Debug.LogError("SpawnManager is NULL.");
         }
-
         if (_uiManager == null) {
             Debug.LogError("The UIManager is null");
         }
+        if (_audioSource == null) {
+            Debug.LogError("The AudioSource on player is null");
+        }
+
     }
 
     // Update is called once per frame
@@ -65,14 +75,16 @@ public class Player : MonoBehaviour
 
     private void Shoot() {
         if ( Input.GetKeyDown(KeyCode.Space) && Time.time > _nextFire) {
+            _nextFire = Time.time + _fireRate;
             if ( isTriple ) {
                 Instantiate(_tripleShot, transform.position, Quaternion.identity);
-                _nextFire = Time.time + _fireRate;
             } else {
                 Instantiate(_laserPrefab, transform.position + new Vector3(0, 1.0f, 0), Quaternion.identity);
-                _nextFire = Time.time + _fireRate;
             }
+            _audioSource.clip = _laserAudio;
+            _audioSource.Play();
         }
+        
     }
 
     public void Damage(int arg_damage) {
@@ -103,7 +115,6 @@ public class Player : MonoBehaviour
     #region "TripleBoostActivateAndDeactivate"
     public void ActivateTriple() {
         isTriple = true;
-
         StartCoroutine(disableTriple());
     }
     IEnumerator disableTriple() {
